@@ -9,8 +9,7 @@ public class GridLayOut {
         public GridLayOut() {
             this.createFrame();
         }
-
-        // Method 1: Create JFrame
+        
         public JFrame createFrame() {
             JFrame.setDefaultLookAndFeelDecorated(true);
             frame = new JFrame("GridLayout");
