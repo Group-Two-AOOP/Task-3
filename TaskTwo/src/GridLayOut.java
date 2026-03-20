@@ -14,8 +14,8 @@ public class GridLayOut {
             JFrame.setDefaultLookAndFeelDecorated(true);
             frame = new JFrame("GridLayout");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setExtendedState(JFrame.MAXIMIZED_BOTH); // Maximize window
-            frame.setLayout(new GridLayout(1, 3)); // 1 row, 3 columns
+            frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            frame.setLayout(new GridLayout(1, 3)); 
 
             frame.add(this.CreateJPanelOne());
             frame.add(this.CreateJPanelTwo());
