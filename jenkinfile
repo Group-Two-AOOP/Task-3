@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+
+    environment {
+        SONARQUBE = 'SonarQubeServer' // the name you configured in Jenkins
+    }
+
+    stages {
+
+        stage('Build') {
+            steps {
+                // Use 'bat' if Windows, 'sh' if Linux/Mac
+                bat 'mvn clean install'
+            }
+        }
+
+        stage('Analyze') {
+            steps {
+                withSonarQubeEnv("${SONARQUBE}") {
+                    bat 'mvn sonar:sonar'
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                waitForQualityGate abortPipeline: true
+            }
+        }
+    }
+}
