@@ -2,37 +2,24 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven'   // 👈 must match name in Jenkins config
+        maven 'Maven'
     }
-
-    stages {
-        stage('Build') {
-            steps {
-                bat 'mvn clean install'
-            }
-        }
-    }
-}
-
-pipeline {
-    agent any
 
     environment {
-        SONARQUBE = 'SonarQubeServer' // the name you configured in Jenkins
+        SONARQUBE = 'SonarQube'
     }
 
     stages {
 
         stage('Build') {
             steps {
-                // Use 'bat' if Windows, 'sh' if Linux/Mac
                 bat 'mvn clean install'
             }
         }
 
-        stage('Analyze') {
+        stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv("${SONARQUBE}") {
+                withSonarQubeEnv('SonarQube') {
                     bat 'mvn sonar:sonar'
                 }
             }
@@ -40,7 +27,11 @@ pipeline {
 
         stage('Quality Gate') {
             steps {
-                waitForQualityGate abortPipeline: true
+                script {
+                    timeout(time: 2, unit: 'MINUTES') {
+                        waitForQualityGate abortPipeline: true
+                    }
+                }
             }
         }
     }
