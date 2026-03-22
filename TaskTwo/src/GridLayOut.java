@@ -10,7 +10,7 @@ public class GridLayOut {
             this.createFrame();
         }
         
-        public JFrame createFrame() {
+        public void createFrame() {
             JFrame.setDefaultLookAndFeelDecorated(true);
             frame = new JFrame("GridLayout");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
