@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        SONAR = "SonarQube" // your SonarQube server name
+        SONAR = "SonarQube" // Your SonarQube server name in Jenkins
     }
 
     stages {
@@ -19,7 +19,7 @@ pipeline {
         stage('Build') {
             steps {
                 // Use the Maven installation configured in Jenkins
-                withMaven(maven: 'Maven3') { // Replace 'Maven3' with the exact name in Jenkins Global Tool
+                withMaven(maven: 'Maven') { // Replace 'Maven3' with your Maven name in Jenkins Global Tool Config
                     bat 'mvn clean install -Dmaven.test.skip=true'
                 }
             }
@@ -28,7 +28,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv("${SONAR}") {
-                    withMaven(Maven: 'Maven3') {
+                    withMaven(maven: 'Maven3') {
                         bat 'mvn sonar:sonar -Dmaven.test.skip=true'
                     }
                 }
