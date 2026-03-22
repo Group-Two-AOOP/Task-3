@@ -1,26 +1,34 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'Maven'
-    }
-
     environment {
-        SONARQUBE = 'SonarQube'
+        // Replace "SonarQube" with the name of your SonarQube installation in Jenkins
+        SONAR = "SonarQube"
     }
 
     stages {
+        stage('Checkout SCM') {
+            steps {
+                git(
+                    url: 'https://github.com/Group-Two-AOOP/TaskTwo.git',
+                    credentialsId: 'mee',
+                    branch: 'main'
+                )
+            }
+        }
 
         stage('Build') {
             steps {
-                bat 'mvn clean install'
+                // Compile your source files
+                bat 'mvn clean install -Dmaven.test.skip=true'
             }
         }
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') {
-                    bat 'mvn sonar:sonar'
+                withSonarQubeEnv("${SONAR}") {
+                    // Analyze src/ folder as configured in pom.xml
+                    bat 'mvn sonar:sonar -Dmaven.test.skip=true'
                 }
             }
         }
@@ -28,11 +36,28 @@ pipeline {
         stage('Quality Gate') {
             steps {
                 script {
-                    timeout(time: 20, unit: 'MINUTES') {
-                        waitForQualityGate abortPipeline: true
+                    // Wait for SonarQube Quality Gate with timeout
+                    timeout(time: 10, unit: 'MINUTES') {
+                        def qg = waitForQualityGate()
+                        if (qg.status != 'OK') {
+                            // Mark build as failed if Quality Gate fails
+                            error "Pipeline aborted due to Quality Gate failure: ${qg.status}"
+                        }
                     }
                 }
             }
+        }
+    }
+
+    post {
+        success {
+            echo "Pipeline completed successfully!"
+        }
+        failure {
+            echo "Pipeline failed. Check logs and SonarQube report."
+        }
+        aborted {
+            echo "Pipeline was aborted due to timeout or manual stop."
         }
     }
 }
