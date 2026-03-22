@@ -1,36 +1,38 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'Maven' // Make sure this matches the Maven name in Global Tool Config
+    }
+
     environment {
-        SONAR = "SonarQube" // Your SonarQube server name in Jenkins
+        SONARQUBE = 'SonarQube' // Make sure this matches your SonarQube server in Jenkins
     }
 
     stages {
+
         stage('Checkout SCM') {
             steps {
+                // Checkout only once, avoids double git fetch
                 git(
                     url: 'https://github.com/Group-Two-AOOP/TaskTwo.git',
-                    credentialsId: 'mee',
-                    branch: 'main'
+                    branch: 'main',
+                    credentialsId: 'mee'
                 )
             }
         }
 
         stage('Build') {
             steps {
-                // Use the Maven installation configured in Jenkins
-                withMaven(maven: 'Maven') { // Replace 'Maven3' with your Maven name in Jenkins Global Tool Config
-                    bat 'mvn clean install -Dmaven.test.skip=true'
-                }
+                // Skip tests and ensure Maven uses Jenkins configured tool
+                bat 'mvn clean install -Dmaven.test.skip=true'
             }
         }
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv("${SONAR}") {
-                    withMaven(maven: 'Maven3') {
-                        bat 'mvn sonar:sonar -Dmaven.test.skip=true'
-                    }
+                withSonarQubeEnv("${SONARQUBE}") {
+                    bat 'mvn sonar:sonar -Dmaven.test.skip=true'
                 }
             }
         }
@@ -38,10 +40,11 @@ pipeline {
         stage('Quality Gate') {
             steps {
                 script {
-                    timeout(time: 10, unit: 'MINUTES') {
+                    // Wait for SonarQube Quality Gate with timeout
+                    timeout(time: 30, unit: 'MINUTES') { // increased timeout
                         def qg = waitForQualityGate()
                         if (qg.status != 'OK') {
-                            error "Pipeline aborted due to Quality Gate failure: ${qg.status}"
+                            error "Pipeline aborted: Quality Gate status = ${qg.status}"
                         }
                     }
                 }
