@@ -1,6 +1,22 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'Maven'   // 👈 must match name in Jenkins config
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                bat 'mvn clean install'
+            }
+        }
+    }
+}
+
+pipeline {
+    agent any
+
     environment {
         SONARQUBE = 'SonarQubeServer' // the name you configured in Jenkins
     }
