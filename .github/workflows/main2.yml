@@ -7,7 +7,6 @@ on:
 
 jobs:
   build:
-    name: Build and analyze
     runs-on: windows-latest
 
     steps:
@@ -19,9 +18,11 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v6
         with:
           args: >
-            -Dsonar.projectKey=TaskTwo
+            -Dsonar.projectKey=TakTwo
             -Dsonar.projectName=Task-3
-            -Dsonar.sources=.
+            -Dsonar.sources=src
+            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
+            -Dsonar.token=${{ secrets.SONAR_TOKEN }}
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
