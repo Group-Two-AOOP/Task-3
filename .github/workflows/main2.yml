@@ -15,9 +15,10 @@ jobs:
           fetch-depth: 0
 
       - name: Compile Java
+        shell: cmd
         run: |
-          mkdir out
-          javac -d out $(dir /s /b *.java)
+           mkdir out
+           javac -d out src\*.java
 
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v6
