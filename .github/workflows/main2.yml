@@ -23,9 +23,9 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v6
         with:
           args: >
-            -Dsonar.projectKey=Task-3
+            -Dsonar.projectKey=TaskTwo
             -Dsonar.projectName=Task-3
-            -Dsonar.sources=.
+            -Dsonar.sources=src
             -Dsonar.java.binaries=out
         env:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
