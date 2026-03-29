@@ -23,7 +23,7 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v6
         with:
           args: >
-            -Dsonar.projectKey=TaskTwo
+            -Dsonar.projectKey=Task-3
             -Dsonar.projectName=Task-3
             -Dsonar.sources=.
             -Dsonar.java.binaries=out
