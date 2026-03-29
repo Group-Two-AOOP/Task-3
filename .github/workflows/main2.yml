@@ -14,15 +14,19 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Compile Java
+        run: |
+          mkdir out
+          javac -d out $(dir /s /b *.java)
+
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v6
         with:
           args: >
-            -Dsonar.projectKey=TakTwo
+            -Dsonar.projectKey=TaskTwo
             -Dsonar.projectName=Task-3
-            -Dsonar.sources=src
-            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
-            -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+            -Dsonar.sources=.
+            -Dsonar.java.binaries=out
         env:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
