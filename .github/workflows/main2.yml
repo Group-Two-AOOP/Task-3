@@ -13,12 +13,11 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Compile Java
         shell: cmd
         run: |
-           mkdir out
-           javac -d out src\*.java
+          mkdir out
+          for /R src %%f in (*.java) do javac -d out %%f
 
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v6
